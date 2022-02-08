@@ -1,6 +1,7 @@
-import React, { useEffect, useState, RefObject, createRef } from "react";
+import { useEffect, createRef } from "react";
 import ReactDOM from "react-dom";
-import { createEditor } from "./rete";
+import { createEditor } from "./app";
+
 
 function Editor() {
   const divRef = createRef<HTMLInputElement>();
