@@ -5,7 +5,7 @@ import ConnectionPlugin from 'rete-connection-plugin';
 import ContextMenuPlugin from 'rete-context-menu-plugin';
 import HistoryPlugin from 'rete-history-plugin';
 import { init } from "json-node-editor";
-
+import './app.scss';
 
 
 var numSocket = new Rete.Socket("Number value");
@@ -291,6 +291,31 @@ const sampleDefs = {
         "name",
         "count"
     ]
+  },
+  "numtest": {
+      "title": "NumTest",
+      "type": "object",
+      "properties": {
+          "a": {
+              "title": "A",
+              "type": "integer"
+          },
+          "b": {
+              "title": "B",
+              "anyOf": [
+                  {
+                      "type": "integer"
+                  },
+                  {
+                      "type": "string"
+                  }
+              ]
+          }
+      },
+      "required": [
+          "a",
+          "b"
+      ]
   }
 }
 
