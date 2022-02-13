@@ -9,6 +9,7 @@ import ContextMenuPlugin from 'rete-context-menu-plugin';
 import HistoryPlugin from 'rete-history-plugin';
 import { init, getJSONData } from "json-node-editor";
 import './app.scss';
+import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 
 
 const sampleDefs = {
@@ -241,6 +242,19 @@ export async function createEditor(container: HTMLElement): Promise<Rete.NodeEdi
   editor.use(HistoryPlugin);
   init(sampleDefs, editor, engine);
 
+  // test a component with a very long socket name
+  class TestComponent extends Rete.Component {
+    async builder(node: Rete.Node): Promise<void> {
+        node.addOutput(new Rete.Output("pls", "Pls", new Rete.Socket("pls".repeat(100))));
+    }
+    worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]): void {
+    }
+  }
+  let t = new TestComponent("Testing Pls");
+  editor.register(t);
+  engine.register(t);
+  
+
   editor.on('process', () => {
     console.log('editor process');
   });
@@ -307,7 +321,7 @@ function Editor() {
       </div>
       <div className="content-container">
           <div ref={divRef} style={{maxWidth: "50%"}}></div>
-          <div>
+          <div style={{flexGrow: 1}}>
             <Select 
               options={[
                 {value: "editor", label:"Editor JSON"},
