@@ -1,224 +1,211 @@
 import { useEffect, createRef, useState } from "react";
-import * as Rete from 'rete';
+import * as Rete from "rete";
 import ReactDOM from "react-dom";
-import Select from 'react-select';
-import ReactRenderPlugin from 'rete-react-render-plugin';
-import AreaPlugin from 'rete-area-plugin';
-import ConnectionPlugin from 'rete-connection-plugin';
-import ContextMenuPlugin from 'rete-context-menu-plugin';
-import HistoryPlugin from 'rete-history-plugin';
+import Select from "react-select";
+import ReactRenderPlugin from "rete-react-render-plugin";
+import AreaPlugin from "rete-area-plugin";
+import ConnectionPlugin from "rete-connection-plugin";
+import ContextMenuPlugin from "rete-context-menu-plugin";
+import HistoryPlugin from "rete-history-plugin";
 import { init, getJSONData } from "json-node-editor";
-import './app.scss';
+import "./app.scss";
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 
-
 const sampleDefs = {
-  "RFMvAvg": {
-    "title": "RFMvAvg",
-    "description": "moving average of parent values",
-    "type": "object",
-    "additionalProperties": false,
-    "isClassDefinition": true,
-    "required": ["cache_count"],
-    "properties": {
-      "custom_ftr_identifier": {
-        "title": "Custom Ftr Identifier",
-        "type": "string"
+  RFMvAvg: {
+    title: "RFMvAvg",
+    description: "moving average of parent values",
+    type: "object",
+    additionalProperties: false,
+    isClassDefinition: true,
+    required: ["cache_count"],
+    properties: {
+      custom_ftr_identifier: {
+        title: "Custom Ftr Identifier",
+        type: "string",
       },
-      "cache_count": {
-        "title": "Cache Count",
-        "description": "number of caching points",
-        "default": 2,
-        "type": "integer"
+      cache_count: {
+        title: "Cache Count",
+        description: "number of caching points",
+        default: 2,
+        type: "integer",
       },
-      "cache_secs": {
-        "title": "Cache Secs",
-        "type": "number"
+      cache_secs: {
+        title: "Cache Secs",
+        type: "number",
       },
-      "cache_insidewindow": {
-        "title": "Cache Insidewindow",
-        "type": "boolean"
-      }
-    }
+      cache_insidewindow: {
+        title: "Cache Insidewindow",
+        type: "boolean",
+      },
+    },
   },
-  'sample_dict': {
-    "title": "hello",
-    "required": "children",
-    "properties": {
-      "a": {
-        "type": "object",
-        "additionalProperties": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "integer"
-          }
-        }
-      }
-    }
+  sample_dict: {
+    title: "hello",
+    required: "children",
+    properties: {
+      a: {
+        type: "object",
+        additionalProperties: {
+          type: "object",
+          additionalProperties: {
+            type: "integer",
+          },
+        },
+      },
+    },
   },
-  "a": {
-    "title": "A",
-    "type": "object",
-    "properties": {
-      "a": {
-        "title": "A",
-        "anyOf": [
+  a: {
+    title: "A",
+    type: "object",
+    properties: {
+      a: {
+        title: "A",
+        anyOf: [
           {
-            "type": "object",
-            "additionalProperties": {
-              "type": "integer"
-            }
+            type: "object",
+            additionalProperties: {
+              type: "integer",
+            },
           },
           {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        ]
-      }
+            type: "object",
+            additionalProperties: {
+              type: "object",
+              additionalProperties: {
+                type: "string",
+              },
+            },
+          },
+        ],
+      },
     },
-    "required": [
-      "a"
-    ]
+    required: ["a"],
   },
-  "C": {
-    "title": "C",
-    "type": "object",
-    "properties": {
-      "a": {
-        "title": "A",
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
+  C: {
+    title: "C",
+    type: "object",
+    properties: {
+      a: {
+        title: "A",
+        type: "object",
+        additionalProperties: {
+          anyOf: [
             {
-              "type": "integer"
+              type: "integer",
             },
             {
-              "type": "string"
-            }
-          ]
-        }
+              type: "string",
+            },
+          ],
+        },
       },
-      "b": {
-        "title": "B",
-        "type": "integer"
-      }
+      b: {
+        title: "B",
+        type: "integer",
+      },
     },
-    "required": [
-      "a",
-      "b"
-    ]
+    required: ["a", "b"],
   },
-  "e": {
-    "title": "E",
-    "type": "object",
-    "properties": {
-      "a": {
-        "title": "A",
-        "anyOf": [
+  e: {
+    title: "E",
+    type: "object",
+    properties: {
+      a: {
+        title: "A",
+        anyOf: [
           {
-            "type": "object",
-            "additionalProperties": {
-              "anyOf": [
+            type: "object",
+            additionalProperties: {
+              anyOf: [
                 {
-                  "type": "integer"
+                  type: "integer",
                 },
                 {
-                  "type": "string"
-                }
-              ]
-            }
+                  type: "string",
+                },
+              ],
+            },
           },
           {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
+            type: "object",
+            additionalProperties: {
+              type: "string",
+            },
           },
           {
-            "type": "integer"
-          }
-        ]
-      },
-      "b": {
-        "title": "B",
-        "type": "integer"
-      }
-    },
-    "required": [
-      "a",
-      "b"
-    ]
-  },
-  "hello": {
-    "title": "Hello",
-    "type": "object",
-    "properties": {
-        "name": {
-            "title": "Name",
-            "type": "string"
-        },
-        "another": {
-            "title": "Another",
-            "type": "string"
-        },
-        "pls": {
-            "title": "Pls",
-            "default": "hello",
-            "type": "string"
-        },
-        "count": {
-            "title": "Count",
-            "type": "integer"
-        },
-        "seven": {
-            "title": "Seven",
-            "default": 7,
-            "type": "integer"
-        },
-        "d": {
-            "title": "D",
-            "type": "object"
-        }
-    },
-    "required": [
-        "name",
-        "count"
-    ]
-  },
-  "numtest": {
-      "title": "NumTest",
-      "type": "object",
-      "properties": {
-          "a": {
-              "title": "A",
-              "type": "integer"
+            type: "integer",
           },
-          "b": {
-              "title": "B",
-              "anyOf": [
-                  {
-                      "type": "integer"
-                  },
-                  {
-                      "type": "string"
-                  }
-              ]
-          }
+        ],
       },
-      "required": [
-          "a",
-          "b"
-      ]
-  }
-}
+      b: {
+        title: "B",
+        type: "integer",
+      },
+    },
+    required: ["a", "b"],
+  },
+  hello: {
+    title: "Hello",
+    type: "object",
+    properties: {
+      name: {
+        title: "Name",
+        type: "string",
+      },
+      another: {
+        title: "Another",
+        type: "string",
+      },
+      pls: {
+        title: "Pls",
+        default: "hello",
+        type: "string",
+      },
+      count: {
+        title: "Count",
+        type: "integer",
+      },
+      seven: {
+        title: "Seven",
+        default: 7,
+        type: "integer",
+      },
+      d: {
+        title: "D",
+        type: "object",
+      },
+    },
+    required: ["name", "count"],
+  },
+  numtest: {
+    title: "NumTest",
+    type: "object",
+    properties: {
+      a: {
+        title: "A",
+        type: "integer",
+      },
+      b: {
+        title: "B",
+        anyOf: [
+          {
+            type: "integer",
+          },
+          {
+            type: "string",
+          },
+        ],
+      },
+    },
+    required: ["a", "b"],
+  },
+};
 
-export async function createEditor(container: HTMLElement): Promise<Rete.NodeEditor> {
-  
+
+export async function createEditor(
+  container: HTMLElement
+): Promise<Rete.NodeEditor> {
   // TODO - shift drag select not working
   console.log("creating editor...");
   var editor = new Rete.NodeEditor("demo@0.1.0", container);
@@ -226,41 +213,52 @@ export async function createEditor(container: HTMLElement): Promise<Rete.NodeEdi
 
   editor.use(ReactRenderPlugin);
   editor.use(AreaPlugin, {
-    background: true, 
+    background: true,
     snap: true,
     scaleExtent: {
       min: 0.5,
       max: 1,
     },
-    translateExtent: { 
-      width: 5000, 
-      height: 4000 
+    translateExtent: {
+      width: 5000,
+      height: 4000,
     },
   });
   editor.use(ConnectionPlugin);
-  editor.use(ContextMenuPlugin, {searchBar: true});
+  editor.use(ContextMenuPlugin, { searchBar: true });
   editor.use(HistoryPlugin);
   init(sampleDefs, editor, engine);
 
   // test a component with a very long socket name
   class TestComponent extends Rete.Component {
     async builder(node: Rete.Node): Promise<void> {
-        node.addOutput(new Rete.Output("pls", "Pls", new Rete.Socket("pls".repeat(100))));
+      node.addOutput(
+        new Rete.Output("pls", "Pls", new Rete.Socket("pls".repeat(100)))
+      );
     }
-    worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]): void {
-    }
+    worker(
+      node: NodeData,
+      inputs: WorkerInputs,
+      outputs: WorkerOutputs,
+      ...args: unknown[]
+    ): void {}
   }
   let t = new TestComponent("Testing Pls");
   editor.register(t);
   engine.register(t);
-  
 
-  editor.on('process', () => {
-    console.log('editor process');
+  editor.on("process", () => {
+    console.log("editor process");
   });
 
   editor.on(
-    ["process", "nodecreated", "noderemoved", "connectioncreated", "connectionremoved"],
+    [
+      "process",
+      "nodecreated",
+      "noderemoved",
+      "connectioncreated",
+      "connectionremoved",
+    ],
     async () => {
       console.log("editor change");
       // await engine.abort();
@@ -268,13 +266,13 @@ export async function createEditor(container: HTMLElement): Promise<Rete.NodeEdi
     }
   );
 
-  editor.on('error', (args: string | Error) => {
+  editor.on("error", (args: string | Error) => {
     console.log(`foun an error: ${args}`);
-  })
+  });
 
   // disable zoom on double click
-  editor.on('zoom', ({ source }) => {
-      return source !== 'dblclick';
+  editor.on("zoom", ({ source }) => {
+    return source !== "dblclick";
   });
 
   editor.view.resize();
@@ -284,8 +282,6 @@ export async function createEditor(container: HTMLElement): Promise<Rete.NodeEdi
 
   return editor;
 }
-
-
 
 function Editor() {
   const divRef = createRef<HTMLInputElement>();
@@ -303,9 +299,15 @@ function Editor() {
         setEditor(newEditor);
         // log editor JSON change
         newEditor.on(
-          ["process", "nodecreated", "noderemoved", "connectioncreated", "connectionremoved"],
+          [
+            "process",
+            "nodecreated",
+            "noderemoved",
+            "connectioncreated",
+            "connectionremoved",
+          ],
           async () => {
-            setNodeJSON(JSON.stringify(newEditor.toJSON(),null,4));
+            setNodeJSON(JSON.stringify(newEditor.toJSON(), null, 4));
             setDataJSON(JSON.stringify(getJSONData(newEditor), null, 4));
           }
         );
@@ -313,44 +315,42 @@ function Editor() {
     }
   });
 
-
   return (
     <div className="root-container">
       <div>
-        <h1><code>JSON</code> Node Editor Demo</h1>
+        <h1>
+          <code>JSON</code> Node Editor Demo
+        </h1>
       </div>
       <div className="content-container">
-          <div ref={divRef} style={{maxWidth: "50%"}}></div>
-          <div style={{flexGrow: 1}}>
-            <Select 
-              options={[
-                {value: "editor", label:"Editor JSON"},
-                {value: "data", label: "JSON Data"}
-              ]} 
-              defaultValue={{value: "data", label: "JSON Data"}}
-              onChange={({value, label}) => setDisplay(value)}
-            />
-            <textarea 
-              hidden={display!="editor"}
-              className="text-json" 
-              value={nodeJSON} 
-              onChange={(event) => setNodeJSON(event.currentTarget.value)}
-            ></textarea>
-            <textarea 
-              hidden={display!="data"}
-              className="text-json" 
-              value={dataJSON} 
-              onChange={(event) => setDataJSON(event.currentTarget.value)}
-            ></textarea>
-          </div>
-          
+        <div ref={divRef} style={{ maxWidth: "50%" }}></div>
+        <div style={{ flexGrow: 1 }}>
+          <Select
+            options={[
+              { value: "editor", label: "Editor JSON" },
+              { value: "data", label: "JSON Data" },
+            ]}
+            defaultValue={{ value: "data", label: "JSON Data" }}
+            onChange={({ value, label }) => setDisplay(value)}
+          />
+          <textarea
+            hidden={display != "editor"}
+            className="text-json"
+            value={nodeJSON}
+            onChange={(event) => setNodeJSON(event.currentTarget.value)}
+          ></textarea>
+          <textarea
+            hidden={display != "data"}
+            className="text-json"
+            value={dataJSON}
+            onChange={(event) => setDataJSON(event.currentTarget.value)}
+          ></textarea>
+        </div>
       </div>
       <div className="footer">pls</div>
     </div>
   );
 }
-
-
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<Editor />, rootElement);
