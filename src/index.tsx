@@ -227,7 +227,7 @@ export async function createEditor(
   editor.use(ConnectionPlugin);
   editor.use(ContextMenuPlugin, { searchBar: true });
   editor.use(HistoryPlugin);
-  init(sampleDefs, editor, engine);
+  init(null, editor, engine);
 
   // test a component with a very long socket name
   class TestComponent extends Rete.Component {
