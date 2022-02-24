@@ -10,86 +10,184 @@ import HistoryPlugin from "rete-history-plugin";
 import { init, getJSONData } from "json-node-editor";
 import "./app.scss";
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
+import { MyJSONSchema } from "json-node-editor/types/jsonschema";
 
-const sampleDefs = {
-  RFMvAvg: {
-    title: "RFMvAvg",
-    description: "moving average of parent values",
-    type: "object",
-    additionalProperties: false,
-    isClassDefinition: true,
-    required: ["cache_count"],
-    properties: {
-      custom_ftr_identifier: {
-        title: "Custom Ftr Identifier",
-        type: "string",
-      },
-      cache_count: {
-        title: "Cache Count",
-        description: "number of caching points",
-        default: 2,
-        type: "integer",
-      },
-      cache_secs: {
-        title: "Cache Secs",
-        type: "number",
-      },
-      cache_insidewindow: {
-        title: "Cache Insidewindow",
-        type: "boolean",
-      },
-    },
-  },
-  sample_dict: {
-    title: "hello",
-    required: "children",
-    properties: {
-      a: {
-        type: "object",
-        additionalProperties: {
-          type: "object",
-          additionalProperties: {
-            type: "integer",
-          },
+const sampleSchema: MyJSONSchema = {
+  definitions: {
+    RFMvAvg: {
+      title: "RFMvAvg",
+      description: "moving average of parent values",
+      type: "object",
+      additionalProperties: false,
+      required: ["cache_count"],
+      properties: {
+        custom_ftr_identifier: {
+          title: "Custom Ftr Identifier",
+          type: "string",
+        },
+        cache_count: {
+          title: "Cache Count",
+          description: "number of caching points",
+          default: 2,
+          type: "integer",
+        },
+        cache_secs: {
+          title: "Cache Secs",
+          type: "number",
+        },
+        cache_insidewindow: {
+          title: "Cache Insidewindow",
+          type: "boolean",
         },
       },
     },
-  },
-  a: {
-    title: "A",
-    type: "object",
-    properties: {
-      a: {
-        title: "A",
-        anyOf: [
-          {
+    sample_dict: {
+      title: "hello",
+      properties: {
+        a: {
+          type: "object",
+          additionalProperties: {
             type: "object",
             additionalProperties: {
               type: "integer",
             },
           },
-          {
-            type: "object",
-            additionalProperties: {
+        },
+      },
+    },
+    a: {
+      title: "A",
+      type: "object",
+      properties: {
+        a: {
+          title: "A",
+          anyOf: [
+            {
+              type: "object",
+              additionalProperties: {
+                type: "integer",
+              },
+            },
+            {
+              type: "object",
+              additionalProperties: {
+                type: "object",
+                additionalProperties: {
+                  type: "string",
+                },
+              },
+            },
+          ],
+        },
+      },
+      required: ["a"],
+    },
+    C: {
+      title: "C",
+      type: "object",
+      properties: {
+        a: {
+          title: "A",
+          type: "object",
+          additionalProperties: {
+            anyOf: [
+              {
+                type: "integer",
+              },
+              {
+                type: "string",
+              },
+            ],
+          },
+        },
+        b: {
+          title: "B",
+          type: "integer",
+        },
+      },
+      required: ["a", "b"],
+    },
+    e: {
+      title: "E",
+      type: "object",
+      properties: {
+        a: {
+          title: "A",
+          anyOf: [
+            {
+              type: "object",
+              additionalProperties: {
+                anyOf: [
+                  {
+                    type: "integer",
+                  },
+                  {
+                    type: "string",
+                  },
+                ],
+              },
+            },
+            {
               type: "object",
               additionalProperties: {
                 type: "string",
               },
             },
-          },
-        ],
+            {
+              type: "integer",
+            },
+          ],
+        },
+        b: {
+          title: "B",
+          type: "integer",
+        },
       },
+      required: ["a", "b"],
     },
-    required: ["a"],
-  },
-  C: {
-    title: "C",
-    type: "object",
-    properties: {
-      a: {
-        title: "A",
-        type: "object",
-        additionalProperties: {
+    hello: {
+      title: "Hello",
+      type: "object",
+      properties: {
+        name: {
+          title: "Name",
+          type: "string",
+        },
+        another: {
+          title: "Another",
+          type: "string",
+        },
+        pls: {
+          title: "Pls",
+          default: "hello",
+          type: "string",
+        },
+        count: {
+          title: "Count",
+          type: "integer",
+        },
+        seven: {
+          title: "Seven",
+          default: 7,
+          type: "integer",
+        },
+        d: {
+          title: "D",
+          type: "object",
+        },
+      },
+      required: ["name", "count"],
+    },
+    numtest: {
+      title: "NumTest",
+      type: "object",
+      properties: {
+        a: {
+          title: "A",
+          type: "integer",
+        },
+        b: {
+          title: "B",
           anyOf: [
             {
               type: "integer",
@@ -100,108 +198,10 @@ const sampleDefs = {
           ],
         },
       },
-      b: {
-        title: "B",
-        type: "integer",
-      },
+      required: ["a", "b"],
     },
-    required: ["a", "b"],
-  },
-  e: {
-    title: "E",
-    type: "object",
-    properties: {
-      a: {
-        title: "A",
-        anyOf: [
-          {
-            type: "object",
-            additionalProperties: {
-              anyOf: [
-                {
-                  type: "integer",
-                },
-                {
-                  type: "string",
-                },
-              ],
-            },
-          },
-          {
-            type: "object",
-            additionalProperties: {
-              type: "string",
-            },
-          },
-          {
-            type: "integer",
-          },
-        ],
-      },
-      b: {
-        title: "B",
-        type: "integer",
-      },
-    },
-    required: ["a", "b"],
-  },
-  hello: {
-    title: "Hello",
-    type: "object",
-    properties: {
-      name: {
-        title: "Name",
-        type: "string",
-      },
-      another: {
-        title: "Another",
-        type: "string",
-      },
-      pls: {
-        title: "Pls",
-        default: "hello",
-        type: "string",
-      },
-      count: {
-        title: "Count",
-        type: "integer",
-      },
-      seven: {
-        title: "Seven",
-        default: 7,
-        type: "integer",
-      },
-      d: {
-        title: "D",
-        type: "object",
-      },
-    },
-    required: ["name", "count"],
-  },
-  numtest: {
-    title: "NumTest",
-    type: "object",
-    properties: {
-      a: {
-        title: "A",
-        type: "integer",
-      },
-      b: {
-        title: "B",
-        anyOf: [
-          {
-            type: "integer",
-          },
-          {
-            type: "string",
-          },
-        ],
-      },
-    },
-    required: ["a", "b"],
   },
 };
-
 
 export async function createEditor(
   container: HTMLElement
@@ -227,7 +227,7 @@ export async function createEditor(
   editor.use(ConnectionPlugin);
   editor.use(ContextMenuPlugin, { searchBar: true });
   editor.use(HistoryPlugin);
-  init(null, editor, engine);
+  init(sampleSchema, editor, engine);
 
   // test a component with a very long socket name
   class TestComponent extends Rete.Component {
