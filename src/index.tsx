@@ -10,9 +10,9 @@ import HistoryPlugin from "rete-history-plugin";
 import { init, getJSONData } from "json-node-editor";
 import "./app.scss";
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
-import { MyJSONSchema } from "json-node-editor/types/jsonschema";
+import { JSONSchema7} from 'json-schema';
 
-const sampleSchema: MyJSONSchema = {
+const sampleSchema: JSONSchema7 = {
   definitions: {
     RFMvAvg: {
       title: "RFMvAvg",
@@ -334,13 +334,13 @@ function Editor() {
             onChange={({ value, label }) => setDisplay(value)}
           />
           <textarea
-            hidden={display != "editor"}
+            hidden={display !== "editor"}
             className="text-json"
             value={nodeJSON}
             onChange={(event) => setNodeJSON(event.currentTarget.value)}
           ></textarea>
           <textarea
-            hidden={display != "data"}
+            hidden={display !== "data"}
             className="text-json"
             value={dataJSON}
             onChange={(event) => setDataJSON(event.currentTarget.value)}
