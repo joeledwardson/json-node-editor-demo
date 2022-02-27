@@ -13,6 +13,28 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 import { JSONSchema7} from 'json-schema';
 
 const sampleSchema: JSONSchema7 = {
+  type: "object",
+  properties: {
+    a: {
+      title: "A",
+      type: "object",
+      additionalProperties: {
+        anyOf: [
+          {
+            type: "integer",
+          },
+          {
+            type: "string",
+          },
+        ],
+      },
+    },
+    b: {
+      title: "B",
+      type: "integer",
+    },
+  },
+  required: ["a", "b"],
   definitions: {
     RFMvAvg: {
       title: "RFMvAvg",
