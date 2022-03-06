@@ -11,6 +11,7 @@ import { init, getJSONData } from "json-node-editor";
 import "./app.scss";
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 import { JSONSchema7} from 'json-schema';
+import ReactJson from 'react-json-view'
 
 const sampleSchema: JSONSchema7 = {
   type: "object",
@@ -306,11 +307,27 @@ export async function createEditor(
 }
 
 function Editor() {
+  type Display = "editor" | "data";
+  type Option = {value: Display, label: string};
+  let dataOption: Option = { value: "data", label: "JSON Data" };
+  let editorOption: Option = { value: "editor", label: "Editor JSON" };
+  let options: Array<Option> = [dataOption, editorOption];
+  
+  let initialSelect: Display = "data";
+  let initialOption: Option = dataOption;
+  
   const divRef = createRef<HTMLInputElement>();
   const [editor, setEditor] = useState<Rete.NodeEditor | null>(null);
-  const [nodeJSON, setNodeJSON] = useState<string>("");
-  const [dataJSON, setDataJSON] = useState<string>("");
-  const [display, setDisplay] = useState<string>("data");
+  const [editorJSON, setEditorJSON] = useState<object>({});
+  const [dataJSON, setDataJSON] = useState<object>({});
+  const [displaySelect, setDisplaySelect] = useState<Display>(initialSelect);
+  const [displayJSON, setDisplayJSON] = useState<object>({});
+
+  const upadateDisplayJSON = (val: Display) => {
+    if(val ==="data") setDisplayJSON(dataJSON);
+    else if(val === "editor") setDataJSON(editorJSON);
+  }
+
 
   useEffect(() => {
     // check div ref exists and editor not initialised
@@ -329,10 +346,16 @@ function Editor() {
             "connectionremoved",
           ],
           async () => {
-            setNodeJSON(JSON.stringify(newEditor.toJSON(), null, 4));
-            setDataJSON(JSON.stringify(getJSONData(newEditor), null, 4));
+            let newNodeJSON = newEditor.toJSON(); 
+            setEditorJSON(newNodeJSON);
+            let newDataJSON = getJSONData(newEditor);
+            newDataJSON = {"#": newDataJSON};  
+            setDataJSON(newDataJSON);
+
+            upadateDisplayJSON(displaySelect);
           }
         );
+        newEditor.trigger('process');
       });
     }
   });
@@ -345,28 +368,24 @@ function Editor() {
         </h1>
       </div>
       <div className="content-container">
-        <div ref={divRef} style={{ maxWidth: "50%" }}></div>
-        <div style={{ flexGrow: 1 }}>
+        <div className="editor-holder">
+            <div className="editor-div" ref={divRef}></div>
+        </div>
+        <div className="text-holder">
           <Select
-            options={[
-              { value: "editor", label: "Editor JSON" },
-              { value: "data", label: "JSON Data" },
-            ]}
-            defaultValue={{ value: "data", label: "JSON Data" }}
-            onChange={({ value, label }) => setDisplay(value)}
+            isMulti={false}
+            options={options}
+            defaultValue={initialOption}
+            onChange={(opt) => {
+              setDisplaySelect(opt.value);
+              upadateDisplayJSON(opt.value);
+            }}
           />
-          <textarea
-            hidden={display !== "editor"}
-            className="text-json"
-            value={nodeJSON}
-            onChange={(event) => setNodeJSON(event.currentTarget.value)}
-          ></textarea>
-          <textarea
-            hidden={display !== "data"}
-            className="text-json"
-            value={dataJSON}
-            onChange={(event) => setDataJSON(event.currentTarget.value)}
-          ></textarea>
+          <ReactJson
+            name={null}
+            src={displayJSON}
+            style={{overflow: "scroll"}}
+          />
         </div>
       </div>
       <div className="footer">pls</div>

@@ -10,15 +10,32 @@ body, #root {
     height: 100vh;
     display: flex;
     flex-direction: column;   
+
 }
 
 .content-container {
-    flex-grow: 1;
+    flex-grow: 1;  // content holders fill space vertically
+    overflow: hidden;  // dont allow react-json to expand below screen
     display: flex;
-}
+    flex-direction: row;
 
-.text-json {
-    flex-grow: 1;
-    height: 100%;
-    width: 100%;
+    .editor-holder {
+        width: 50%;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        .editor-div {
+            height: 100%;
+        }
+    }
+    .text-holder {
+        flex-grow: 1; // fill space horizontally
+        display: flex;
+        flex-direction: column;
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        .text-json {
+            flex-grow: 1;
+        }
+    }
 }
