@@ -11,7 +11,6 @@
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "json-node-editor": "file:../JSON-node-editor",
-    "node-sass": "^7.0.1",
     "react": "file:../JSON-node-editor/node_modules/react",
     "react-dom": "file:../JSON-node-editor/node_modules/react-dom",
     "react-json-view": "^1.21.3",
@@ -23,6 +22,7 @@
     "rete-context-menu-plugin": "github:joeledwardson/context-menu-plugin#build",
     "rete-history-plugin": "github:joeledwardson/history-plugin#build",
     "rete-react-render-plugin": "github:joeledwardson/react-render-plugin#build",
+    "sass": "^1.49.9",
     "typescript": "^4.5.5",
     "web-vitals": "^2.1.4"
   },
